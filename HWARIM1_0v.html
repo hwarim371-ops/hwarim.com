@@ -3474,33 +3474,25 @@ function sharePost(pid){
   const tagNames = {notice:'공지',general:'일반',vote:'투표',photo:'사진'};
   const tag = tagNames[p.type] || '게시물';
 
-  // 본문 미리보기 (최대 100자)
-  const bodyPreview = (p.body || '').replace(/\n+/g,' ').trim().slice(0,100);
-  const bodyText = bodyPreview.length >= 100 ? bodyPreview + '...' : bodyPreview;
-
-  // 댓글 수
-  const commentCount = (p.comments||[]).length;
-  const commentText = commentCount > 0 ? `\n💬 댓글 ${commentCount}개` : '';
+  const projectName = currentProject ? currentProject.name : '';
 
   const text =
 `📌 [HWARIM ${tag}]
 ━━━━━━━━━━━━━━━━━
+프로젝트명: ${projectName}
 제목: ${p.title}
 작성자: ${p.author}${p.authorDept ? ' · ' + p.authorDept : ''} | ${p.date}
 ━━━━━━━━━━━━━━━━━
 👉 HWARIM 앱에 접속 후 로그인하여 확인하세요.
 https://hwarim371-ops.github.io/hwarim.com/HWARIM1_0v.html`;
 
-  // 클립보드 복사
   navigator.clipboard.writeText(text).then(()=>{
-    // 복사 성공 토스트
     const toast = document.createElement('div');
     toast.textContent = '📋 공유 텍스트가 복사되었습니다!';
     toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--primary-dark);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:9999;box-shadow:0 4px 12px rgba(0,0,0,.2);pointer-events:none;';
     document.body.appendChild(toast);
     setTimeout(()=>toast.remove(), 2500);
   }).catch(()=>{
-    // 클립보드 실패 시 모달로 텍스트 보여주기
     openModal(`<h2>📤 게시물 공유</h2>
       <p style="font-size:13px;color:var(--text-light);margin-bottom:12px">아래 내용을 복사해서 카카오톡·메일 등에 붙여넣으세요.</p>
       <textarea style="width:100%;height:180px;font-size:12px;line-height:1.6;font-family:inherit;border:1px solid var(--border);border-radius:8px;padding:10px;resize:none;background:var(--bg);color:var(--text)" readonly onclick="this.select()">${text}</textarea>
