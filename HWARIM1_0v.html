@@ -2301,8 +2301,8 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 
 // ▼ 알림 받을 이메일 주소 목록 (쉼표로 구분)
 var NOTIFY_EMAILS = [
-  '<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a8cdd0c9c5d8c4cd99e8cfc5c9c1c486cbc7c5">[email&#160;protected]</a>',
-  '<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="284d50494558444d1a6846495e4d5a064b4745">[email&#160;protected]</a>'
+  '<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c9acb1a8a4b9a5acf889aea4a8a0a5e7aaa6a4">[email&#160;protected]</a>',
+  '<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="75100d141805191047351b140310075b161a18">[email&#160;protected]</a>'
 ];
 
 // ▼ 알림 발송 여부 (false로 바꾸면 이메일 꺼짐)
@@ -2710,7 +2710,7 @@ async function doLogin(){
     const targetPost = posts.find(x=>x.id===pid);
     if(targetPost){
       const targetSite = SITES.find(s=>s.id===targetPost.siteId);
-      if(targetSite){ selectProject(targetSite.id); setTimeout(()=>openPost(pid), 300); return; }
+      if(targetSite){ enterProject(targetSite.id); openPost(pid); return; }
     }
   }
 
@@ -5561,6 +5561,7 @@ function updateAuthSyncUI(){
   try{
     const saved=localStorage.getItem('hwarim_sync_url')||'';
     if(saved && !SCRIPT_URL) SCRIPT_URL=saved;
+    if(SCRIPT_URL && !saved) { try{ localStorage.setItem('hwarim_sync_url', SCRIPT_URL); }catch(e){} }
     if(urlInput && !urlInput.value) urlInput.value=SCRIPT_URL||saved;
   }catch(e){}
 
@@ -6066,7 +6067,7 @@ initSync();
       const targetPost = posts.find(x=>x.id===pid);
       if(targetPost){
         const targetSite = SITES.find(s=>s.id===targetPost.siteId);
-        if(targetSite){ selectProject(targetSite.id); setTimeout(()=>openPost(pid), 300); return; }
+        if(targetSite){ enterProject(targetSite.id); openPost(pid); return; }
       }
     }
     goProjectSelect();
