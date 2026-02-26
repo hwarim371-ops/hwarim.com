@@ -2689,9 +2689,7 @@ function showPage(p){
 }
 
 async function doLogin(){
-
   if(!requireSyncForAuth()) return;
-
   await ensureCloudSyncedForAuth();
 
   const name=document.getElementById('loginId').value.trim(),pw=document.getElementById('loginPw').value;
@@ -2701,10 +2699,22 @@ async function doLogin(){
   if(u.status==='pending'){alert('관리자 승인 대기 중입니다. 잠시 후 다시 시도해주세요.');return;}
   if(u.status==='rejected'){alert('가입이 거부되었습니다. 관리자에게 문의하세요.');return;}
 
+  try{ localStorage.setItem('hwarim_auto_login', JSON.stringify({name, pw})); }catch(e){}
+
   currentUser=u; applyUserTheme(currentUser);
   updatePatchEditBtnVisibility();
-  goProjectSelect();
 
+  const hash = location.hash;
+  if(hash && hash.startsWith('#post-')){
+    const pid = parseInt(hash.replace('#post-',''));
+    const targetPost = posts.find(x=>x.id===pid);
+    if(targetPost){
+      const targetSite = SITES.find(s=>s.id===targetPost.siteId);
+      if(targetSite){ enterProject(targetSite.id); openPost(pid); return; }
+    }
+  }
+
+  goProjectSelect();
 }
 
 async function doSignup(){
@@ -2749,7 +2759,7 @@ function checkPwStrength(){
 
 }
 
-function doLogout(){currentUser=null;currentProject=null;showPage('loginPage');closeAllPanels();}
+function doLogout(){ try{ localStorage.removeItem('hwarim_auto_login'); }catch(e){} currentUser=null; currentProject=null; showPage('loginPage'); closeAllPanels(); }
 
 
 
@@ -3473,7 +3483,6 @@ function sharePost(pid){
 
   const tagNames = {notice:'공지',general:'일반',vote:'투표',photo:'사진'};
   const tag = tagNames[p.type] || '게시물';
-
   const projectName = currentProject ? currentProject.name : '';
 
   const text =
@@ -3484,7 +3493,7 @@ function sharePost(pid){
 작성자: ${p.author}${p.authorDept ? ' · ' + p.authorDept : ''} | ${p.date}
 ━━━━━━━━━━━━━━━━━
 👉 HWARIM 앱에 접속 후 로그인하여 확인하세요.
-https://hwarim371-ops.github.io/hwarim.com/HWARIM1_0v.html`;
+https://hwarim371-ops.github.io/hwarim.com/HWARIM1_0v.html#post-${p.id}`;
 
   navigator.clipboard.writeText(text).then(()=>{
     const toast = document.createElement('div');
@@ -6038,6 +6047,32 @@ let cloudHasData=null;
 // Hook sync into data-changing operations
 
 initSync();
+
+// 자동 로그인 시도
+(async function tryAutoLogin(){
+  try{
+    const saved = localStorage.getItem('hwarim_auto_login');
+    if(!saved) return;
+    const {name, pw} = JSON.parse(saved);
+    if(!name || !pw) return;
+    await ensureCloudSyncedForAuth();
+    const u = users.find(x=>x.name===name && x.pw===pw);
+    if(!u || u.status!=='approved') return;
+    currentUser=u; applyUserTheme(currentUser);
+    updatePatchEditBtnVisibility();
+    const hash = location.hash;
+    if(hash && hash.startsWith('#post-')){
+      const pid = parseInt(hash.replace('#post-',''));
+      const targetPost = posts.find(x=>x.id===pid);
+      if(targetPost){
+        const targetSite = SITES.find(s=>s.id===targetPost.siteId);
+        if(targetSite){ enterProject(targetSite.id); openPost(pid); return; }
+      }
+    }
+    goProjectSelect();
+  }catch(e){}
+})();
+
 updateAuthSyncUI();
 renderPatchNote();
 
