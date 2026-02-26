@@ -2301,8 +2301,8 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 
 // ▼ 알림 받을 이메일 주소 목록 (쉼표로 구분)
 var NOTIFY_EMAILS = [
-  'example1@gmail.com',
-  'example2@naver.com'
+  '<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a8cdd0c9c5d8c4cd99e8cfc5c9c1c486cbc7c5">[email&#160;protected]</a>',
+  '<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="284d50494558444d1a6846495e4d5a064b4745">[email&#160;protected]</a>'
 ];
 
 // ▼ 알림 발송 여부 (false로 바꾸면 이메일 꺼짐)
@@ -2493,7 +2493,7 @@ function doPost(e) {
 
 
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 
 const APP_INFO={name:'HWARIM',version:'1.0.1',dataSchema:4};
 
@@ -2710,7 +2710,7 @@ async function doLogin(){
     const targetPost = posts.find(x=>x.id===pid);
     if(targetPost){
       const targetSite = SITES.find(s=>s.id===targetPost.siteId);
-      if(targetSite){ enterProject(targetSite.id); openPost(pid); return; }
+      if(targetSite){ selectProject(targetSite.id); setTimeout(()=>openPost(pid), 300); return; }
     }
   }
 
@@ -6066,7 +6066,7 @@ initSync();
       const targetPost = posts.find(x=>x.id===pid);
       if(targetPost){
         const targetSite = SITES.find(s=>s.id===targetPost.siteId);
-        if(targetSite){ enterProject(targetSite.id); openPost(pid); return; }
+        if(targetSite){ selectProject(targetSite.id); setTimeout(()=>openPost(pid), 300); return; }
       }
     }
     goProjectSelect();
@@ -6569,15 +6569,4 @@ window.saveMyInfo = function() {
 window.openUserInfoModal = function(uid) {
     const u = users.find(x => x.id === uid); if(!u) return;
     const c = u.card || {}; const phone = c.phone || '등록된 연락처가 없습니다.'; const email = c.email || '등록된 이메일이 없습니다.'; const dc = getDeptColor(u.dept);
-    openModal(`<div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;"><div style="width:56px;height:56px;border-radius:14px;background:${dc};color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;">${u.name[0]}</div><div><h2 style="margin-bottom:4px;font-size:20px;font-weight:700;">${u.name}</h2></div></div><div style="background:var(--bg);padding:20px;"><div>📞 연락처: ${phone}</div><div>✉️ 이메일: ${email}</div></div><div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">닫기</button></div>`);
-};
-
-window.openMyCard = function() { openMyCard(); };
-window.saveMyCard = function() { window.saveMyInfo(); };
-
-
-</script>
-
-</body>
-
-</html>
+    openModal(`<div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;"><div style="width:56px;height:56px;border-radius:14px;background:${dc};color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;">${u.name[0]}</div><div><h2 style="margin-bottom:4px;font-size:20px;font-weight:700;">${u.name}</h2></div></div><div style="background:v
