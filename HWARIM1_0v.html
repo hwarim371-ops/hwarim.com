@@ -399,7 +399,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 
 .post-title{font-size:16px;font-weight:700;}
 
-.post-meta{display:flex;align-items:center;gap:14px;font-size:12px;color:var(--text-light);flex-wrap:wrap;}
+.post-meta{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--text-light);flex-wrap:wrap;}
 
 .post-meta span{display:flex;align-items:center;gap:4px;}
 
@@ -1389,7 +1389,99 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 .subpost-images{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
 .subpost-images img{max-width:100%;max-height:300px;border-radius:var(--radius-sm);cursor:pointer;border:1px solid var(--border);}
 
+/* ── 상세보기 액션 버튼 모바일 최적화 ── */
+@media(max-width:768px){
+  /* 상단 태그+버튼 행 */
+  .detail-card > div:first-child{
+    flex-wrap:wrap !important;
+    gap:8px !important;
+  }
+  /* 태그 */
+  .detail-card .post-tag{
+    font-size:11px !important;
+    padding:4px 10px !important;
+  }
+  /* 버튼 그룹 */
+  .detail-card > div:first-child > div{
+    display:flex !important;
+    gap:6px !important;
+    flex-wrap:wrap !important;
+  }
+  /* 공유·수정 버튼 */
+  .detail-card .btn.btn-outline.btn-sm{
+    padding:6px 10px !important;
+    font-size:11px !important;
+    border-radius:8px !important;
+    min-width:0 !important;
+  }
+  /* 삭제 버튼 */
+  .post-del-btn{
+    padding:6px 10px !important;
+    font-size:11px !important;
+    border-radius:8px !important;
+    gap:3px !important;
+  }
+  /* 제목 */
+  .detail-title{
+    font-size:18px !important;
+    line-height:1.4 !important;
+    margin-bottom:10px !important;
+  }
+  /* 작성자 블록 */
+  .detail-author-block{
+    padding:10px 14px !important;
+    gap:10px !important;
+    margin-bottom:16px !important;
+  }
+  .detail-author-avatar{
+    width:36px !important;
+    height:36px !important;
+    border-radius:9px !important;
+    font-size:14px !important;
+  }
+  .detail-author-name{font-size:13px !important;}
+  .detail-author-dept{font-size:12px !important;}
+  /* 날짜·조회수 */
+  .detail-author-block [style*="margin-left:auto"]{
+    font-size:11px !important;
+  }
+  /* 본문 */
+  .detail-body{font-size:14px !important;line-height:1.8 !important;}
+  /* 카드 패딩 */
+  .detail-card{padding:18px 14px !important;}
+  /* 뒤로가기 버튼 */
+  .detail-back{
+    font-size:12px !important;
+    padding:6px 14px !important;
+    margin-bottom:12px !important;
+  }
+  /* 댓글 */
+  .comments-section h4{font-size:13px !important;}
+  .comment-input-row input{font-size:13px !important;padding:9px 12px !important;}
+  .comment-item{gap:8px !important;}
+  .comment-avatar{width:28px !important;height:28px !important;font-size:11px !important;}
+  .comment-author{font-size:12px !important;}
+  .comment-text{font-size:12px !important;}
+  .comment-time{font-size:10px !important;}
+}
+  /* ── 헤더 프로젝트 전환 버튼 ── */
+.header-project-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 12px;border-radius:20px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+  color:#fff;font-size:12px;font-weight:700;cursor:pointer;
+  transition:var(--tr);white-space:nowrap;font-family:inherit;
+  margin-left:8px;flex-shrink:0;
+}
+.header-project-btn:hover{background:rgba(255,255,255,.22);}
+.header-project-btn .hpb-icon{display:none;}   /* 아이콘: PC는 숨김 */
+.header-project-btn .hpb-text{display:inline;} /* 텍스트: PC는 표시 */
 
+@media(max-width:768px){
+  .header-project-btn{padding:6px 8px;border-radius:50%;width:32px;height:32px;justify-content:center;margin-left:4px;}
+  .header-project-btn .hpb-icon{display:inline;font-size:15px;}
+  .header-project-btn .hpb-text{display:none;}
+}
 </style>
 
 </head>
@@ -1706,7 +1798,14 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 
     <div class="header-left">
 
-      <div class="logo-text"><span class="logo-text-main">HWARIM 1.0v</span><span class="logo-text-sub">프로젝트 선택</span></div>
+          <div class="logo-text">
+        <span class="logo-text-main">HWARIM 2.0v</span>
+        <span class="logo-text-sub" id="headerProjectName" style="font-size:13px;font-weight:700;color:var(--accent-light);letter-spacing:0;"></span>
+      </div>
+      <button class="header-project-btn" onclick="goProjectSelect()" title="프로젝트 전환">
+        <span class="hpb-icon">🏗️</span>
+        <span class="hpb-text">프로젝트</span>
+      </button>
 
     </div>
 
@@ -3541,7 +3640,7 @@ function renderPosts(){
         <div class="post-title-row"><span class="post-tag ${tagCls[p.type]}">${tagNames[p.type]}</span>${p.isNew?'<span class="post-tag new-tag">NEW</span>':''}<span class="post-title">${p.title}</span></div>
         <div class="post-meta">
           <span>${p.date}</span>
-          <span style="display:flex;align-items:center;gap:4px"><div style="width:16px;height:16px;border-radius:4px;background:${dc};display:inline-flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;color:#fff;flex-shrink:0">${p.author[0]}</div><span style="color:${dc};font-weight:600">${p.author}</span>${dept?`<span style="color:var(--text-light)">·</span><span>${dept}</span>`:''}</span>
+          <span style="display:flex;align-items:center;gap:3px"><div style="width:14px;height:14px;border-radius:3px;background:${dc};display:inline-flex;align-items:center;justify-content:center;font-size:7px;font-weight:800;color:#fff;flex-shrink:0">${p.author[0]}</div><span style="color:${dc};font-weight:600;font-size:11px">${p.author}</span></span>
           <span>👁️ ${p.views}</span>${(p.comments&&p.comments.length)?`<span>💬 ${p.comments.length}</span>`:''}${(p.subposts&&p.subposts.length)?`<span>💡 ${p.subposts.length}</span>`:''}
         </div>
       </div>
@@ -6264,6 +6363,42 @@ let cloudHasData=null;
 // Hook sync into data-changing operations
 
 initSync();
+  // ── 모바일 뒤로가기 처리 (앱 종료 방지) ──
+(function(){
+  function _pushState(view){
+    history.pushState({hwarimView: view}, '', location.pathname + location.search);
+  }
+  // 뷰 전환 시마다 히스토리에 추가
+  const _origNavigateTo = navigateTo;
+  window.navigateTo = function(view){
+    _origNavigateTo(view);
+    _pushState(view);
+  };
+  const _origOpenPost = openPost;
+  window.openPost = function(id){
+    _origOpenPost(id);
+    _pushState('detail_' + id);
+  };
+  // 뒤로가기 이벤트 처리
+  window.addEventListener('popstate', function(e){
+    const state = e.state;
+    if(!state || !state.hwarimView){
+      // 히스토리 없으면 게시판으로
+      if(currentUser && currentProject){ navigateTo('board'); history.pushState({hwarimView:'board'}, '', location.pathname); }
+      return;
+    }
+    const v = state.hwarimView;
+    if(v && v.startsWith('detail_')){
+      const pid = parseInt(v.replace('detail_',''));
+      if(!isNaN(pid)) openPost(pid);
+    } else if(v === 'board' || v === 'dashboard' || v === 'process' || v === 'survey' || v === 'admin' || v === 'sync'){
+      // navigateTo 내부에서 다시 pushState하면 중복되므로 원본 함수 직접 호출
+      _origNavigateTo(v);
+    }
+  });
+  // 최초 진입 시 기본 상태 설정
+  history.replaceState({hwarimView:'board'}, '', location.pathname + location.search);
+})();
 updateAuthSyncUI();
 renderPatchNote();
 
