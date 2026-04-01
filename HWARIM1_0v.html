@@ -1096,7 +1096,156 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 
 @media(max-width:900px){.dash-tri-grid{grid-template-columns:1fr!important;}.admin-grid{grid-template-columns:1fr!important;}.admin-card.full{grid-column:span 1!important;}}
 
-@media(max-width:768px){.sidebar{display:none;}.main{padding:18px!important;}.header{padding:0 16px;}.mobile-menu-btn{display:flex!important;}.board-filter-chips{gap:4px;}.filter-chip{padding:5px 10px;font-size:12px;}}
+@media(max-width:768px){
+  .sidebar{display:none;}
+  .main{padding:14px!important;}
+  .header{padding:0 14px;}
+  .mobile-menu-btn{display:flex!important;}
+
+  /* ━━━ 동기화 위젯 극소형 ━━━ */
+  .sync-widget{
+    width:auto!important;min-width:0!important;
+    border-radius:50px!important;
+    bottom:12px!important;right:10px!important;
+    box-shadow:0 2px 12px rgba(0,0,0,.18)!important;
+    overflow:hidden;
+  }
+  .sync-widget .sync-timer-row{display:none!important;}
+  .sync-widget .sync-force-btn{display:none!important;}
+  .sync-widget .sync-time-text{display:none!important;}
+  .sync-widget-top{padding:6px 10px!important;gap:5px!important;}
+  .sync-dot{width:6px!important;height:6px!important;}
+  .sync-status-text{font-size:10px!important;max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .sync-widget.expanded{border-radius:14px!important;width:200px!important;}
+  .sync-widget.expanded .sync-timer-row{display:flex!important;}
+  .sync-widget.expanded .sync-force-btn{display:flex!important;font-size:10px!important;padding:6px 0!important;}
+  .sync-widget.expanded .sync-time-text{display:block!important;}
+  .sync-widget.expanded .sync-status-text{max-width:none;}
+
+  /* ━━━ 프로젝트 선택 화면 컴팩트 ━━━ */
+  .project-select-page{
+    padding:0!important;
+    align-items:stretch!important;
+    min-height:calc(100vh - 62px);
+  }
+  .project-select-card{
+    padding:16px 14px!important;
+    border-radius:0!important;
+    box-shadow:none!important;
+    max-width:100%!important;
+    min-height:100%;
+  }
+  .project-select-card h1{font-size:17px!important;margin-bottom:2px!important;}
+  .project-select-card .subtitle{font-size:12px!important;margin-bottom:14px!important;}
+  .project-grid{
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+  }
+  .project-item{
+    padding:12px 14px!important;
+    display:flex!important;
+    align-items:center!important;
+    gap:12px!important;
+    border-radius:10px!important;
+    border-width:1.5px!important;
+  }
+  .project-item:hover{transform:none!important;}
+  .project-item .pj-top{
+    margin-bottom:0!important;
+    flex-shrink:0;
+    display:flex!important;
+    align-items:center!important;
+  }
+  .project-item .pj-code{
+    margin-bottom:0!important;
+    width:38px!important;height:38px!important;
+    font-size:12px!important;border-radius:10px!important;
+  }
+  .project-item .pj-update-badge{display:none!important;}
+  .project-item > div:not(.pj-top){flex:1!important;min-width:0!important;}
+  .project-item .pj-name{font-size:13px!important;font-weight:700!important;margin-bottom:1px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .project-item .pj-loc{font-size:11px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .project-item .pj-meta{margin-top:1px!important;font-size:10px!important;}
+
+  /* ━━━ 앱 내부 레이아웃 ━━━ */
+  .app-body{margin-top:62px;}
+  .page-header{margin-bottom:16px!important;}
+  .page-title{font-size:19px!important;}
+  .page-desc{font-size:12px!important;}
+
+  /* 공지 배너 컴팩트 */
+  .announce-banner{
+    padding:16px 16px!important;
+    border-radius:12px!important;
+    margin-bottom:16px!important;
+  }
+  .announce-badge{font-size:10px!important;padding:3px 8px!important;margin-bottom:6px!important;}
+  .announce-title{font-size:15px!important;margin-bottom:4px!important;}
+  .announce-body{font-size:12px!important;line-height:1.5!important;max-width:100%!important;}
+  .announce-date{font-size:11px!important;margin-top:6px!important;}
+  .announce-sparkles{display:none!important;}
+
+  /* 게시판 필터 + 새글 버튼 */
+  .board-header{margin-bottom:14px!important;}
+  .board-filter-chips{
+    gap:5px!important;
+    flex-wrap:nowrap!important;
+    overflow-x:auto!important;
+    padding-bottom:2px!important;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .board-filter-chips::-webkit-scrollbar{display:none;}
+  .filter-chip{
+    padding:5px 10px!important;
+    font-size:11px!important;
+    border-radius:16px!important;
+    flex-shrink:0!important;
+    white-space:nowrap!important;
+  }
+  .chip-count{font-size:10px!important;padding:1px 5px!important;}
+
+  /* 게시글 카드 */
+  .post-list{gap:8px!important;}
+  .post-card{
+    padding:12px 14px!important;
+    border-radius:10px!important;
+  }
+  .post-card-header{margin-bottom:5px!important;}
+  .post-title{font-size:14px!important;line-height:1.4!important;}
+  .post-title-row{gap:5px!important;margin-bottom:4px!important;}
+  .post-tag{font-size:10px!important;padding:2px 7px!important;}
+  .post-meta{gap:8px!important;font-size:11px!important;margin-top:5px!important;}
+  .post-preview{font-size:12px!important;-webkit-line-clamp:1!important;}
+  .post-thumb{width:52px!important;height:40px!important;border-radius:6px!important;}
+  .new-blink{font-size:9px!important;padding:2px 5px!important;top:8px!important;right:8px!important;}
+
+  /* 대시보드 */
+  .dash-tri-grid{gap:10px!important;margin-bottom:16px!important;}
+  .dash-col-header{padding:12px 14px!important;}
+  .dash-col-header .col-title{font-size:14px!important;}
+  .dash-col-header .col-icon{width:32px!important;height:32px!important;font-size:15px!important;}
+  .dash-col-item{padding:10px 14px!important;font-size:13px!important;}
+
+  /* 글쓰기 */
+  .write-section{padding:18px 14px!important;border-radius:12px!important;}
+  .write-actions{flex-direction:column!important;gap:8px!important;}
+  .write-actions .btn{width:100%!important;}
+  .file-upload-zone{padding:20px!important;}
+}
+
+/* 480px 이하 초소형 기기 */
+@media(max-width:480px){
+  .main{padding:10px!important;}
+  .page-title{font-size:17px!important;}
+  .post-title{font-size:13px!important;}
+  .filter-chip{padding:4px 8px!important;font-size:10px!important;}
+  .announce-title{font-size:14px!important;}
+  .notif-toast{min-width:0!important;width:calc(100vw - 24px)!important;max-width:none!important;}
+  .notif-container{right:12px!important;left:12px!important;top:70px!important;}
+  .post-card{padding:10px 12px!important;}
+  .project-item .pj-code{width:34px!important;height:34px!important;font-size:11px!important;}
+}
 
 
 /* ═══ AUTH SYNC (Login) ═══ */
@@ -3148,6 +3297,17 @@ function bindSiteDragEvents(){
 // ── NAV ──
 
 function navigateTo(view){
+  // 모바일: 내비게이션 클릭 시 사이드바 자동 닫기
+  if(window.innerWidth <= 768){
+    const s=document.getElementById('sidebar');
+    const overlay=document.getElementById('sidebarOverlay');
+    if(s && s.style.display==='flex'){
+      s.style.display='none';
+      if(overlay) overlay.style.display='none';
+    }
+  }
+
+  // 집중 뷰(write/detail/survey)에서 목록으로 복귀 시 즉시 pull
   const wasFocusView = isFocusView();
   ['dashboardView','boardView','writeView','detailView','adminView','processView','surveyView','syncView'].forEach(v=>document.getElementById(v).classList.add('hidden'));
 
