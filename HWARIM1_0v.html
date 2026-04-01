@@ -1288,7 +1288,10 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
     <div class="form-group"><label class="form-label">이름</label><input id="loginId" class="form-input" placeholder="이름을 입력하세요"></div>
 
     <div class="form-group"><label class="form-label">비밀번호</label><input id="loginPw" class="form-input" type="password" placeholder="비밀번호 (4자리 이상)"></div>
-
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;padding:0 2px;">
+  <input type="checkbox" id="rememberMe" style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer;">
+  <label for="rememberMe" style="font-size:13px;color:var(--text-light);cursor:pointer;user-select:none;">로그인 유지 (자동 로그인)</label>
+</div>
     <button id="loginBtn" class="btn btn-primary" onclick="doLogin()">로그인</button>
 
     <p class="auth-switch">계정이 없으신가요? <a id="goSignupLink" onclick="showPage('signupPage')">회원가입</a></p>
@@ -1356,8 +1359,6 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
           <option value="현장소장">현장소장</option>
 
           <option value="기타">기타</option>
-
-          <option value="대표">대표</option>
 
         </select>
 
@@ -2701,8 +2702,20 @@ async function doLogin(){
   if(u.status==='pending'){alert('관리자 승인 대기 중입니다. 잠시 후 다시 시도해주세요.');return;}
   if(u.status==='rejected'){alert('가입이 거부되었습니다. 관리자에게 문의하세요.');return;}
 
-  currentUser=u; applyUserTheme(currentUser);
+currentUser=u; applyUserTheme(currentUser);
   updatePatchEditBtnVisibility();
+
+  // 자동 로그인 세션 저장
+  const rememberEl=document.getElementById('rememberMe');
+  if(rememberEl && rememberEl.checked){
+    try{
+      localStorage.setItem('hwarim_session', JSON.stringify({
+        userId: u.id,
+        pwHash: btoa(unescape(encodeURIComponent(u.pw)))
+      }));
+    }catch(e){}
+  }
+
   goProjectSelect();
 
 }
@@ -2749,7 +2762,11 @@ function checkPwStrength(){
 
 }
 
-function doLogout(){currentUser=null;currentProject=null;showPage('loginPage');closeAllPanels();}
+function doLogout(){
+  currentUser=null;currentProject=null;
+  try{localStorage.removeItem('hwarim_session');}catch(e){}
+  showPage('loginPage');closeAllPanels();
+}
 
 
 
@@ -2845,6 +2862,12 @@ function enterApp(){
   updateNotifBadge();
 
   updatePatchEditBtnVisibility();
+
+  // 프로젝트 진입 시 즉시 클라우드 pull + 인터벌 재시작
+  if(SCRIPT_URL){
+    syncFromCloud();
+    startSmartSyncInterval();
+  }
 
 }
 
@@ -3125,6 +3148,7 @@ function bindSiteDragEvents(){
 // ── NAV ──
 
 function navigateTo(view){
+  const wasFocusView = isFocusView();
   ['dashboardView','boardView','writeView','detailView','adminView','processView','surveyView','syncView'].forEach(v=>document.getElementById(v).classList.add('hidden'));
 
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -3158,6 +3182,12 @@ function navigateTo(view){
 
     case'sync':document.getElementById('syncView').classList.remove('hidden');renderSyncView();break;
 
+  }
+
+  // 글쓰기/상세에서 일반 뷰로 복귀 시 즉시 pull
+  const targetIsFocus = ['write','survey','detail'].includes(view);
+  if(wasFocusView && !targetIsFocus && SCRIPT_URL && currentUser){
+    syncFromCloud();
   }
 
 }
@@ -4678,10 +4708,13 @@ function updateSyncUI(){
     dot.classList.add('ing');
     txt.textContent = '동기화 중...';
     if(timeTxt) timeTxt.textContent = '';
-  } else if(syncStatus==='error'){
+} else if(syncStatus==='error'){
     dot.classList.add('err');
-    txt.textContent = '동기화 오류';
+    txt.textContent = '동기화 오류 — 재시도 중';
     if(timeTxt) timeTxt.textContent = '';
+    if(!dot._retryTimer){
+      dot._retryTimer = setTimeout(()=>{ dot._retryTimer=null; if(SCRIPT_URL) syncFromCloud(); }, 30000);
+    }
   } else {
     dot.classList.add('off');
     txt.textContent = SCRIPT_URL ? '연결 시도 중...' : '오프라인';
@@ -4918,7 +4951,7 @@ async function syncToCloud(opts={}){
 //  [즉시 pull] 상세/작성 뷰에서 목록으로 돌아올 때 · 탭 복귀 시
 // ════════════════════════════════════════════════
 
-const SYNC_POLL_MS = 5 * 60 * 1000; // 5분 폴링
+const SYNC_POLL_MS = 2 * 60 * 1000; // 2분 폴링
 
 // 폴링을 중단해야 하는 "집중 뷰" (게시물 읽기 포함)
 const FOCUS_VIEWS = ['write', 'survey', 'detail'];
@@ -4945,7 +4978,16 @@ function startSmartSyncInterval(){
 // 탭 복귀 시 즉시 1회 pull (집중 뷰가 아닐 때만)
 document.addEventListener('visibilitychange', () => {
   if(document.visibilityState === 'visible' && SCRIPT_URL && currentUser && !isFocusView()){
-    syncFromCloud();
+    syncFromCloud().then(()=>{
+      try{
+        const activeNav = document.querySelector('.nav-item.active');
+        const nav = activeNav && activeNav.dataset.nav;
+        if(nav === 'board') renderPosts();
+        else if(nav === 'dashboard') updateDashboard();
+        else if(nav === 'admin') renderAdmin();
+        renderParticipants();
+      }catch(e){}
+    });
   }
 });
 
@@ -5422,8 +5464,30 @@ async function testSyncConnection(){
 
 
 
+// 자동 로그인 복원 함수
+function _tryAutoLogin(){
+  if(currentUser) return;
+  try{
+    const raw=localStorage.getItem('hwarim_session');
+    if(!raw) return;
+    const s=JSON.parse(raw);
+    if(!s||!s.userId) return;
+    const decoded=decodeURIComponent(escape(atob(s.pwHash||'')));
+    const u=users.find(x=>x.id===s.userId&&x.pw===decoded&&x.status==='approved');
+    if(u){
+      currentUser=u;
+      applyUserTheme(currentUser);
+      updatePatchEditBtnVisibility();
+      pushNotification('자동 로그인','환영합니다, '+u.name+'님! 🙌');
+      goProjectSelect();
+    }else{
+      localStorage.removeItem('hwarim_session');
+    }
+  }catch(e){
+    try{localStorage.removeItem('hwarim_session');}catch(e2){}
+  }
+}
 // Initialize sync
-
 function initSync(){
 
   // Load URL from localStorage
@@ -5449,12 +5513,14 @@ function initSync(){
 
   if(SCRIPT_URL){
 
-    syncFromCloud();
+    syncFromCloud().then(()=>{
+      _tryAutoLogin();
+    });
 
-    // ── 스마트 자동 동기화 ──
-    // 2분 폴링, 작성 중일 때는 자동 일시정지
     startSmartSyncInterval();
 
+  } else {
+    _tryAutoLogin();
   }
 
 }
