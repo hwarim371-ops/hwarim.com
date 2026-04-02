@@ -1090,6 +1090,20 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 
 
 #projectSelectPage{background:var(--bg);min-height:100vh;}
+  /* 로그인·프로젝트 페이지는 항상 전체화면 최상단 고정 */
+#loginPage:not(.hidden),
+#signupPage:not(.hidden),
+#projectSelectPage:not(.hidden){
+  position:fixed !important;
+  inset:0 !important;
+  z-index:500 !important;
+  overflow-y:auto !important;
+  background:var(--bg) !important;
+}
+#loginPage:not(.hidden),
+#signupPage:not(.hidden){
+  background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 50%,var(--primary-light) 100%) !important;
+}
 .hidden{display:none!important;}
 
 
@@ -2993,12 +3007,14 @@ function getProjectPosts(){return posts.filter(p=>currentProject&&p.siteId===cur
 // ── AUTH ──
 
 function showPage(p){
-  // 회원가입은 URL 연동 이후에만 가능
   if(p==='signupPage' && !isSyncConfigured()){
     alert('회원가입 전에 동기화(URL)를 먼저 연동해 주세요.');
     p='loginPage';
   }
   document.querySelectorAll('#loginPage,#signupPage,#guidePage,#projectSelectPage,#projectMgmtPage,#appShell').forEach(e=>e.classList.add('hidden'));
+  // appShell 인라인 스타일로 강제 숨김 (클래스 우선순위 문제 방어)
+  const shell=document.getElementById('appShell');
+  if(shell) shell.style.display = (p==='appShell') ? '' : 'none';
   document.getElementById(p).classList.remove('hidden');
   if(p==='loginPage' || p==='signupPage'){updateAuthSyncUI();}
 }
