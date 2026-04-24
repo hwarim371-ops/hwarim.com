@@ -1,161 +1,187 @@
-<style>
-/* * =======================================================
- * HWARIM Premium Beige Theme (기존 HTML/JS 100% 완벽 호환)
- * =======================================================
- */
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HWARIM | Premium Board (Preview)</title>
+    
+    <!-- 최고급 웹 폰트 (Pretendard) 적용 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+    
+    <style>
+        /* 글로벌 럭셔리 디자인 시스템 */
+        :root {
+            --bg-body: #F4F4F6;          
+            --bg-card: #FFFFFF;          
+            --bg-glass: rgba(255, 255, 255, 0.9); 
+            
+            --text-primary: #1A1A1B;     
+            --text-secondary: #6B6B70;   
+            --text-tertiary: #A1A1AA;
+            
+            --accent-gold: #C6A87C;      
+            --accent-gold-hover: #B09265;
+            --accent-dark: #27272A;      
+            
+            --border-light: rgba(0, 0, 0, 0.05);
+            --border-gold: rgba(198, 168, 124, 0.3);
+            
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.05);
+            
+            --font-main: 'Pretendard Variable', Pretendard, sans-serif;
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+        }
 
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Pretendard:wght@300;400;500;600;700&display=swap');
+        * { box-sizing: border-box; }
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            line-height: 1.6;
+            margin: 0; padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
 
-:root {
-    --bg-body: #F4F2ED;         /* 고급스러운 샌드 베이지 배경 */
-    --bg-surface: #FFFFFF;      /* 카드 배경 */
-    --brand-primary: #8C7355;   /* 메인 시그니처 브라운/골드 */
-    --brand-primary-dark: #6B563D;
-    --border-color: #E6E1D6;
-    --text-main: #2A2521;       /* 딥 브라운 텍스트 */
-    --text-sub: #665F58;
-    --radius-md: 12px;
-    --shadow-sm: 0 4px 16px rgba(42, 37, 33, 0.04);
-    --shadow-hover: 0 8px 24px rgba(42, 37, 33, 0.08);
-}
+        /* 뼈대 레이아웃 */
+        .app-container {
+            display: flex; width: 100%; max-width: 1400px; margin: 0 auto; min-height: 100vh;
+        }
+        .sidebar {
+            width: 260px; background: var(--bg-card); border-right: 1px solid var(--border-light);
+            padding: 40px 24px; display: flex; flex-direction: column;
+        }
+        .brand {
+            font-size: 22px; font-weight: 800; letter-spacing: 0.05em;
+            color: var(--accent-dark); margin-bottom: 40px; display: flex; align-items: center; gap: 10px;
+        }
+        .brand::before {
+            content: ''; display: block; width: 10px; height: 10px; background: var(--accent-gold); border-radius: 50%;
+        }
+        .main-content {
+            flex-grow: 1; padding: 50px 60px; max-width: 1000px;
+        }
 
-body {
-    font-family: 'Pretendard', sans-serif;
-    background-color: var(--bg-body);
-    color: var(--text-main);
-    margin: 0; padding: 0;
-    -webkit-font-smoothing: antialiased;
-}
+        /* 버튼 및 폼 럭셔리 오버라이드 흉내 */
+        button, .btn {
+            font-family: var(--font-main);
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        .btn-accent {
+            background-color: var(--accent-gold); color: #fff;
+            box-shadow: 0 4px 12px rgba(198, 168, 124, 0.3);
+        }
+        .btn-accent:hover {
+            background-color: var(--accent-gold-hover); transform: translateY(-2px);
+        }
+        .btn-outline {
+            background-color: transparent; color: var(--text-secondary); border: 1px solid var(--border-light);
+        }
+        .btn-outline:hover {
+            border-color: var(--accent-gold); color: var(--accent-gold);
+        }
 
-/* 폰트 유틸리티 */
-.font-serif, header h1, .modal-title, .logo-text { 
-    font-family: 'Noto Serif KR', serif !important; 
-}
+        /* 게시글 카드 디자인 */
+        .post-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-light);
+            transition: all 0.4s ease;
+        }
+        .post-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+            border-color: var(--border-gold);
+        }
+        
+        /* 사용자 프로필 아바타 (기존 JS 연동) */
+        .avatar {
+            width: 56px; height: 56px; border-radius: 14px; color: #fff;
+            display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800;
+        }
+    </style>
+</head>
+<body>
 
-/* 전체 컨테이너 (PC 대화면 지원) */
-#app, .app-container {
-    max-width: 800px; /* 기존 모바일 너비에서 살짝 넓혀 쾌적하게 */
-    margin: 0 auto;
-    min-height: 100vh;
-    background-color: transparent;
-    padding-bottom: 80px;
-}
+    <div class="app-container">
+        <!-- 사이드바 (미리보기용) -->
+        <aside class="sidebar">
+            <div class="brand">HWARIM</div>
+            <div style="display:flex; flex-direction:column; gap:16px;">
+                <div style="padding:12px 16px; background:var(--bg-body); border-radius:var(--radius-sm); font-weight:600; border-left:3px solid var(--accent-gold);">전체 라운지</div>
+                <div style="padding:12px 16px; color:var(--text-secondary); font-weight:500;">공지사항</div>
+                <div style="padding:12px 16px; color:var(--text-secondary); font-weight:500;">부서 갤러리</div>
+                <div style="padding:12px 16px; color:var(--text-secondary); font-weight:500;">내 정보 설정</div>
+            </div>
+        </aside>
 
-/* 헤더 디자인 프리미엄화 */
-header, .header {
-    background-color: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--border-color);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.02);
-    padding: 16px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky; top: 0; z-index: 100;
-}
-header h1, .header h1, .logo-text {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--text-main);
-    letter-spacing: 1px;
-    margin: 0;
-}
+        <!-- 메인 컨텐츠 영역 (미리보기용 가짜 데이터) -->
+        <main class="main-content">
+            <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 40px;">
+                <h1 style="font-size:28px; font-weight:700;">사내 라운지</h1>
+                <button class="btn btn-accent">새 글 쓰기</button>
+            </header>
+            
+            <div id="boardContainer">
+                
+                <!-- 샘플 게시글 1 (공지사항 느낌) -->
+                <div class="post-card" style="border-top: 4px solid var(--accent-gold);">
+                    <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;">
+                        <div class="avatar" style="background:#1A2B4C;">화</div>
+                        <div>
+                            <h2 style="margin:0 0 4px 0; font-size:18px; font-weight:700;">화림 관리자 <span style="font-size:11px; background:var(--accent-gold); color:white; padding:2px 6px; border-radius:4px; margin-left:6px; vertical-align:middle;">공지</span></h2>
+                            <p style="margin:0; font-size:13px; color:var(--text-secondary);">2024.05.15 · 경영지원팀</p>
+                        </div>
+                    </div>
+                    <div style="font-size:15px; color:var(--text-primary); line-height:1.7; margin-bottom:20px;">
+                        임직원 여러분 안녕하십니까. 경영지원팀입니다.<br>
+                        기존의 딱딱했던 시스템을 벗어나, 하이엔드 테마가 적용된 새로운 화림 게시판 2.0의 런칭을 안내해 드립니다.<br>
+                        기존의 투표 기능, 드라이브 연동은 100% 동일하게 작동합니다.
+                    </div>
+                    <div style="display:flex; gap:12px; border-top:1px solid var(--border-light); padding-top:16px;">
+                        <button class="btn btn-outline" style="padding:8px 16px; font-size:13px;">좋아요 (12)</button>
+                        <button class="btn btn-outline" style="padding:8px 16px; font-size:13px;">댓글 달기</button>
+                    </div>
+                </div>
 
-/* 상단 탭 메뉴 고급화 */
-.tabs, #tabs {
-    background-color: var(--bg-surface);
-    display: flex;
-    border-bottom: 1px solid var(--border-color);
-    position: sticky; top: 60px; z-index: 90;
-    padding: 0 10px;
-}
-.tab {
-    flex: 1; text-align: center; padding: 16px 0;
-    font-size: 15px; font-weight: 600; color: var(--text-sub);
-    cursor: pointer; transition: 0.2s; position: relative;
-}
-.tab.active {
-    color: var(--brand-primary);
-}
-.tab.active::after {
-    content: ''; position: absolute; bottom: 0; left: 15%;
-    width: 70%; height: 3px; background-color: var(--brand-primary);
-    border-radius: 3px 3px 0 0;
-}
+                <!-- 샘플 게시글 2 (일반 투표/의견 느낌) -->
+                <div class="post-card">
+                    <div style="display:flex; align-items:center; gap:16px; margin-bottom:20px;">
+                        <div class="avatar" style="background:#CFA968;">김</div>
+                        <div>
+                            <h2 style="margin:0 0 4px 0; font-size:18px; font-weight:700;">김디자인</h2>
+                            <p style="margin:0; font-size:13px; color:var(--text-secondary);">2024.05.14 · 디자인팀</p>
+                        </div>
+                    </div>
+                    <div style="font-size:15px; color:var(--text-primary); line-height:1.7; margin-bottom:20px;">
+                        새로운 패키지 디자인 A안과 B안 중 어떤 게 더 나은지 투표 부탁드립니다!<br>
+                        <br>
+                        <div style="background:var(--bg-body); padding:16px; border-radius:var(--radius-sm); border:1px solid var(--border-light);">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                <strong>A안 (모던 스타일)</strong> <span style="color:var(--accent-gold); font-weight:bold;">65%</span>
+                            </div>
+                            <div style="width:100%; height:8px; background:#e0e0e0; border-radius:4px; overflow:hidden;"><div style="width:65%; height:100%; background:var(--accent-gold);"></div></div>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:12px; border-top:1px solid var(--border-light); padding-top:16px;">
+                        <button class="btn btn-outline" style="padding:8px 16px; font-size:13px;">투표 참여하기</button>
+                    </div>
+                </div>
 
-/* 피드(게시물) 카드 고급화 */
-#feedList { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
-.card {
-    background-color: var(--bg-surface);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-sm);
-    padding: 24px;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-hover);
-}
+            </div>
+        </main>
+    </div>
 
-/* 버튼 통합 디자인 (기존 btn, btn-accent 등에 덮어씌움) */
-button { cursor: pointer; font-family: inherit; }
-.btn, button.btn {
-    padding: 12px 20px; border-radius: 8px;
-    font-size: 14px; font-weight: 600; border: none;
-    transition: 0.2s;
-}
-.btn-accent, .btn-primary {
-    background-color: var(--brand-primary) !important;
-    color: white !important;
-}
-.btn-accent:hover { background-color: var(--brand-primary-dark) !important; }
-.btn-outline {
-    background-color: transparent !important;
-    border: 1px solid var(--border-color) !important;
-    color: var(--text-main) !important;
-}
-
-/* 인풋/텍스트에어리어 디자인 */
-input[type="text"], input[type="number"], select, textarea {
-    width: 100%; padding: 12px 16px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px; font-size: 14px; font-family: inherit;
-    background-color: var(--bg-body);
-    transition: 0.2s; box-sizing: border-box;
-}
-input:focus, textarea:focus {
-    border-color: var(--brand-primary);
-    outline: none; background-color: white;
-}
-
-/* 플로팅 버튼 (글쓰기 등) */
-.fab, #writeBtn {
-    position: fixed; bottom: 24px; right: 24px;
-    width: 60px; height: 60px;
-    background-color: var(--brand-primary) !important;
-    color: white; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 16px rgba(140, 115, 85, 0.4);
-    z-index: 99; border: none;
-}
-.fab:hover, #writeBtn:hover { transform: scale(1.05); }
-
-/* 모달 디자인 */
-.modal-overlay {
-    background-color: rgba(42, 37, 33, 0.6) !important;
-    backdrop-filter: blur(4px);
-}
-.modal-content {
-    background-color: var(--bg-surface) !important;
-    border-radius: var(--radius-md) !important;
-    box-shadow: 0 24px 48px rgba(0,0,0,0.2) !important;
-    border: none !important;
-}
-
-/* 기존 디자인 잔재 덮어쓰기 */
-.card img { border-radius: 8px; border: 1px solid var(--border-color); margin-top: 12px; }
-.card .content { color: var(--text-main); font-size: 15px; line-height: 1.6; }
-.card .author { font-weight: 700; color: var(--text-main); }
-.card .date { color: var(--text-light); }
-</style>
+</body>
+</html>
